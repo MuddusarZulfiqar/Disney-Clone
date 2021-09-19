@@ -1,5 +1,7 @@
-import React ,{useEffect} from 'react'
+import React ,{useEffect,useState} from 'react'
 import styled from 'styled-components'
+import MenuIcon from '@mui/icons-material/Menu';
+import CloseIcon from '@mui/icons-material/Close';
 import {
     selectUserName ,
     selectUserPhoto,setUserSignIn,setSignOut} from '../features/user/userSlice';
@@ -36,8 +38,13 @@ function Header() {
             history.push('/login')
         })
     }
+    const [isOpenMenu, setisOpenMenu] = useState(false)
     return (
         <Nav>
+            {
+                userName && <CustomMenu onClick={()=>setisOpenMenu(true)} /> 
+            }
+            
             <Logo src="/images/logo.svg" />
             {
                 !userName ? 
@@ -45,7 +52,10 @@ function Header() {
                     <Login onClick={signIn}>Login</Login> 
                 </LoginContainer> :
                 <>
-                    <NavMenu>
+                    <NavMenu MenuOpen={isOpenMenu}>
+                        <CloseBtnWrap>
+                            <CustomClose onClick={()=>setisOpenMenu(false)}/>
+                        </CloseBtnWrap>
                         <a href="#">
                             <img src="/images/home-icon.svg" />
                             <span>Home</span>
@@ -86,6 +96,9 @@ const Nav = styled.nav`
     display: flex;
     align-items: center;
     padding: 0px 36px;
+    @media screen and (max-width: 767px){
+        justify-content: space-between;
+    }
 `
 const Logo = styled.img`
     width:80px;
@@ -96,6 +109,7 @@ const NavMenu = styled.div`
     align-items: center;
     flex: 1;
     margin-left: 25px;
+    
     a{
         display: flex;
         align-items: center;
@@ -130,6 +144,30 @@ const NavMenu = styled.div`
             }
         }
     }
+    @media screen and (max-width:767px){
+        position:fixed;
+        display:block;
+        width:300px;
+        background:#fff;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index:99;
+        margin:0px;
+        transform: ${(props)=>props.MenuOpen ? 'translateX(0%)' : 'translateX(-100%)'};
+        transition: 0.2s ease-in transform;
+        a{
+            display:block;
+            padding:12px;
+            img{
+                filter: grayscale(100%);
+            }
+           span{
+            color:#000;
+           }
+        }
+    }
 `
 const UserImage = styled.img`
     width:48px;
@@ -157,4 +195,30 @@ const LoginContainer = styled.div`
     display: flex;
     justify-content: flex-end;
     flex:1;
+    @media screen and (max-width: 767px){
+        flex:unset;
+    }
+`
+
+const CustomMenu = styled(MenuIcon)`
+    cursor: pointer;
+    @media screen and (min-width: 768px){
+        display: none !important;
+    }
+`
+const CloseBtnWrap = styled.div`
+    text-align:end;
+    padding: 10px;
+    @media screen and (min-width: 768px){
+        display: none !important;
+    }
+
+`
+const CustomClose = styled(CloseIcon)`
+    cursor: pointer;
+    fill: black !important;
+    
+    @media screen and (min-width: 768px){
+        display: none !important;
+    }
 `
